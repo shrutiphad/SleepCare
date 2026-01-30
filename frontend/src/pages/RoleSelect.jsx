@@ -24,9 +24,9 @@ export const RoleSelect = () => {
       description: "Monitor and care for your loved ones remotely",
       icon: Users,
       features: ["Remote patient monitoring", "Alert notifications", "Health reports access"],
-      gradient: "from-cyan-500 to-blue-500",
-      shadowColor: "shadow-cyan-200",
-      bgHover: "hover:border-cyan-300",
+      gradient: "from-teal-500 to-cyan-500",
+      shadowColor: "shadow-teal-200",
+      bgHover: "hover:border-teal-300",
       route: "/signup/caretaker"
     }
   ];

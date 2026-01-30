@@ -64,11 +64,11 @@ export const CaretakerSignup = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-blue-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 py-8 px-4">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-100 rounded-full opacity-40 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-100 rounded-full opacity-40 blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-100 rounded-full opacity-40 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-100 rounded-full opacity-40 blur-3xl" />
       </div>
 
       <div className="max-w-2xl mx-auto relative z-10">
@@ -76,12 +76,12 @@ export const CaretakerSignup = () => {
         <div className="text-center mb-8">
           <button
             onClick={() => navigate("/role-select")}
-            className="inline-flex items-center gap-2 text-slate-500 hover:text-cyan-600 mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-slate-500 hover:text-teal-600 mb-4 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to role selection
           </button>
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl shadow-lg shadow-cyan-200 mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl shadow-lg shadow-teal-200 mb-4">
             <Activity className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-slate-800">Caretaker Registration</h1>
@@ -100,10 +100,10 @@ export const CaretakerSignup = () => {
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isActive
-                        ? "bg-gradient-to-br from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-200"
-                        : isCompleted
-                        ? "bg-cyan-500 text-white"
-                        : "bg-slate-100 text-slate-400"
+                      ? "bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-200"
+                      : isCompleted
+                      ? "bg-teal-500 text-white"
+                      : "bg-slate-100 text-slate-400"
                     }`}
                   >
                     {isCompleted ? (
@@ -358,7 +358,7 @@ export const CaretakerSignup = () => {
                 )}
                 <Button
                   type="submit"
-                  className={`flex-1 h-11 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg shadow-cyan-200 ${step === 3 && !formData.patientConsent ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`flex-1 h-11 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white shadow-lg shadow-teal-200 ${step === 3 && !formData.termsAccepted ? "opacity-50 cursor-not-allowed" : ""}`}
                   disabled={step === 3 && !formData.patientConsent}
                 >
                   {isLoading ? (

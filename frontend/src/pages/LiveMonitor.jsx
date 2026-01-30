@@ -3,27 +3,29 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import {
-  Activity,
-  Heart,
-  Brain,
-  Wind,
-  ArrowLeft,
-  Bell,
-  Settings,
-  Droplets,
-  Gauge,
-  Waves,
-  Zap,
-  AlertTriangle,
-  Power,
-  RefreshCw
+  Activity, Heart,Brain, Wind,
+  ArrowLeft, Bell, Settings, Droplets,
+  Gauge, WavesTriangle, Power, RefreshCw
 } from "lucide-react";
-import { mockPatient, mockVitalSigns, generateLiveData } from "../data/mock";
+import { io } from "socket.io-client";
+const socket = io("http://localhost:3001");
+
 
 export const LiveMonitor = () => {
   const { mode } = useParams();
   const navigate = useNavigate();
-  const [vitals, setVitals] = useState(mockVitalSigns[mode] || mockVitalSigns.normal);
+  const [vitals, setVitals] = useState({
+    spo2: 0,
+    bpm: 0,
+    pressure: 0,
+    breathing: 0,
+    ecgBpm: 0,
+    eegAlpha: 0,
+    eegBeta: 0,
+    eegGamma: 0,
+    alphaBetaRatio: 0
+  });
+  
   const [isConnected, setIsConnected] = useState(true);
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [alertActive, setAlertActive] = useState(false);
@@ -60,27 +62,27 @@ export const LiveMonitor = () => {
   const currentMode = modeConfig[mode] || modeConfig.normal;
   const IconComponent = currentMode.icon;
 
-  // Generate ECG-like waveform data
-  const generateEcgPoint = useCallback((index) => {
-    const baseValue = 50;
-    const t = index % 100;
-    if (t >= 20 && t <= 22) return baseValue + 60; // R peak
-    if (t >= 18 && t <= 19) return baseValue - 10; // Q wave
-    if (t >= 23 && t <= 25) return baseValue - 15; // S wave
-    if (t >= 40 && t <= 50) return baseValue + 8; // T wave
-    return baseValue + (Math.random() - 0.5) * 4;
-  }, []);
+  // // Generate ECG-like waveform data
+  // const generateEcgPoint = useCallback((index) => {
+  //   const baseValue = 50;
+  //   const t = index % 100;
+  //   if (t >= 20 && t <= 22) return baseValue + 60; // R peak
+  //   if (t >= 18 && t <= 19) return baseValue - 10; // Q wave
+  //   if (t >= 23 && t <= 25) return baseValue - 15; // S wave
+  //   if (t >= 40 && t <= 50) return baseValue + 8; // T wave
+  //   return baseValue + (Math.random() - 0.5) * 4;
+  // }, []);
 
-  // Generate EEG-like waveform data
-  const generateEegPoint = useCallback((type, index) => {
-    const frequencies = { alpha: 0.8, beta: 1.5, gamma: 2.5 };
-    const amplitudes = { alpha: 15, beta: 8, gamma: 4 };
-    return (
-      Math.sin(index * frequencies[type]) * amplitudes[type] +
-      (Math.random() - 0.5) * 3 +
-      30
-    );
-  }, []);
+  // // Generate EEG-like waveform data
+  // const generateEegPoint = useCallback((type, index) => {
+  //   const frequencies = { alpha: 0.8, beta: 1.5, gamma: 2.5 };
+  //   const amplitudes = { alpha: 15, beta: 8, gamma: 4 };
+  //   return (
+  //     Math.sin(index * frequencies[type]) * amplitudes[type] +
+  //     (Math.random() - 0.5) * 3 +
+  //     30
+  //   );
+  // }, []);
 
   // Update vitals every second
   useEffect(() => {
@@ -124,6 +126,22 @@ export const LiveMonitor = () => {
     return () => clearInterval(interval);
   }, [mode, generateEcgPoint, generateEegPoint]);
 
+  useEffect(() => {
+    socket.on("sensor-update", data => {
+      setVitals(data);
+  
+      setEcgData(prev => [...prev, data.ecgWave].slice(-100));
+  
+      setEegData(prev => ({
+        alpha: [...prev.alpha, data.eegAlpha].slice(-50),
+        beta: [...prev.beta, data.eegBeta].slice(-50),
+        gamma: [...prev.gamma, data.eegGamma].slice(-50),
+      }));
+    });
+  
+    return () => socket.off("sensor-update");
+  }, []);
+  
   const VitalCard = ({ icon: Icon, label, value, unit, color, isAlert }) => (
     <Card className={`border-0 shadow-lg shadow-slate-200/50 bg-white/80 backdrop-blur-sm transition-all duration-300 ${
       isAlert ? "ring-2 ring-rose-400 animate-pulse" : ""
